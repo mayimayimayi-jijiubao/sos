@@ -2,9 +2,13 @@
   "version": 2,
   "builds": [
     { "src": "index.html", "use": "@vercel/static" },
-    { "src": "qrcode.html", "use": "@vercel/static" }
+    { "src": "qrcode.html", "use": "@vercel/static" },
+    { "src": "av-min.js", "use": "@vercel/static" },
+    { "src": "qrcode.min.js", "use": "@vercel/static" }
   ],
   "routes": [
+    { "src": "/av-min.js", "dest": "/av-min.js" },
+    { "src": "/qrcode.min.js", "dest": "/qrcode.min.js" },
     { "src": "/qrcode", "dest": "/qrcode.html" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
