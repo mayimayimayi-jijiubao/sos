@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>急救宝注册</title>
+<script src="https://cdn1.lncld.net/static/js/av-min-1.10.1.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+<script>
+  AV.init({
+    appId: "Ivzq5oxAhWX2BqNvdFKQbBjl-gzGzoHsz",
+    appKey: "ESfT6VmHoUAzyc8Ay0ebZbuC",
+    serverURL: "https://ivzq5oxa.lc-cn-n1-shared.com"
+  });
+
+  async function submitForm() {
+    const phone = document.getElementById('phone').value.trim();
+    const name = document.getElementById('name').value.trim();
+    const emergencyName = document.getElementById('emergencyName').value.trim();
+    const emergencyPhone = document.getElementById('emergencyPhone').value.trim();
+
+    if (!phone || !name || !emergencyName || !emergencyPhone) {
+      alert('请填写所有必填项！');
+      return;
+    }
+
+    try {
+      const query = new AV.Query('UserInfo');
+      query.equalTo('phone', phone);
+      const existing = await query.first();
+      let obj;
+      if (existing) obj = existing;
+      else {
+        const UserInfo = AV.Object.extend('UserInfo');
+        obj = new UserInfo();
+      }
+
+      obj.set('phone', phone);
+      obj.set('name', name);
+      obj.set('emergencyName', emergencyName);
+      obj.set('emergencyPhone', emergencyPhone);
+      await obj.save();
+
+      alert('信息已保存成功！');
+
+      const url = window.location.origin + '/qrcode.html?phone=' + encodeURIComponent(phone);
+      document.getElementById('qrcode').innerHTML = '';
+      new QRCode(document.getElementById('qrcode'), { text: url, width: 200, height: 200 });
+    } catch (err) {
+      console.error(err);
+      alert('保存失败：' + err.message);
+    }
+  }
+</script>
+</head>
+<body style="font-family:sans-serif; margin:30px;">
+<h2>急救宝注册</h2>
+<label>我的名字（必填）：<input id="name"></label><br/>
+<label>我的手机号（必填）：<input id="phone" type="tel" placeholder="请填写手机号"></label><br/>
+<label>紧急联系人名字（必填）：<input id="emergencyName"></label><br/>
+<label>紧急联系人手机号（必填）：<input id="emergencyPhone" type="tel"></label><br/><br/>
+<button onclick="submitForm()">提交并生成二维码</button>
+
+<h3>我的二维码</h3>
+<div id="qrcode"></div>
+</body>
+</html>

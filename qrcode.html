@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>急救宝信息展示</title>
+<script src="https://cdn1.lncld.net/static/js/av-min-1.10.1.js"></script>
+<script>
+  AV.init({
+    appId: "Ivzq5oxAhWX2BqNvdFKQbBjl-gzGzoHsz",
+    appKey: "ESfT6VmHoUAzyc8Ay0ebZbuC",
+    serverURL: "https://ivzq5oxa.lc-cn-n1-shared.com"
+  });
+
+  async function loadInfo() {
+    const params = new URLSearchParams(window.location.search);
+    const phone = params.get('phone');
+    if (!phone) {
+      document.getElementById('info').innerText = '未提供手机号';
+      return;
+    }
+
+    try {
+      const query = new AV.Query('UserInfo');
+      query.equalTo('phone', phone);
+      const obj = await query.first();
+      if (!obj) {
+        document.getElementById('info').innerText = '未找到信息';
+        return;
+      }
+      const data = obj.toJSON();
+      document.getElementById('info').innerHTML = `
+        <p><strong>我的名字：</strong>${data.name}</p>
+        <p><strong>我的手机号：</strong>${data.phone}</p>
+        <p><strong>紧急联系人名字：</strong>${data.emergencyName}</p>
+        <p><strong>紧急联系人手机号：</strong>${data.emergencyPhone}</p>`;
+    } catch (err) {
+      console.error(err);
+      document.getElementById('info').innerText = '加载失败：' + err.message;
+    }
+  }
+
+  window.onload = loadInfo;
+</script>
+</head>
+<body style="font-family:sans-serif; margin:30px;">
+<h2>急救信息展示</h2>
+<div id="info">加载中...</div>
+</body>
+</html>
