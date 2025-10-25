@@ -3,11 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <title>急救宝注册</title>
-<!-- 使用官方unpkg CDN -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- 本地 JS 引用 -->
 <script src="av-min.js"></script>
-<script src="qrcode.min.js"></script>  
-<!-- index.html 中用到二维码库 -->
+<script src="qrcode.min.js"></script>
+
 <script>
+  // 初始化 LeanCloud
   AV.init({
     appId: "Ivzq5oxAhWX2BqNvdFKQbBjl-gzGzoHsz",
     appKey: "ESfT6VmHoUAzyc8Ay0ebZbuC",
@@ -26,6 +29,7 @@
     }
 
     try {
+      // 检查是否已存在手机号记录
       const query = new AV.Query('UserInfo');
       query.equalTo('phone', phone);
       const existing = await query.first();
@@ -36,33 +40,86 @@
         obj = new UserInfo();
       }
 
+      // 写入数据
       obj.set('phone', phone);
       obj.set('name', name);
       obj.set('emergencyName', emergencyName);
       obj.set('emergencyPhone', emergencyPhone);
       await obj.save();
 
-      alert('信息已保存成功！');
+      alert('✅ 信息已保存成功！');
 
+      // 生成二维码
       const url = window.location.origin + '/qrcode.html?phone=' + encodeURIComponent(phone);
       document.getElementById('qrcode').innerHTML = '';
-      new QRCode(document.getElementById('qrcode'), { text: url, width: 200, height: 200 });
+      new QRCode(document.getElementById('qrcode'), {
+        text: url,
+        width: 200,
+        height: 200
+      });
+
     } catch (err) {
       console.error(err);
-      alert('保存失败：' + err.message);
+      alert('❌ 保存失败：' + err.message);
     }
   }
 </script>
-</head>
-<body style="font-family:sans-serif; margin:30px;">
-<h2>急救宝注册</h2>
-<label>我的名字（必填）：<input id="name"></label><br/>
-<label>我的手机号（必填）：<input id="phone" type="tel" placeholder="请填写手机号"></label><br/>
-<label>紧急联系人名字（必填）：<input id="emergencyName"></label><br/>
-<label>紧急联系人手机号（必填）：<input id="emergencyPhone" type="tel"></label><br/><br/>
-<button onclick="submitForm()">提交并生成二维码</button>
 
-<h3>我的二维码</h3>
-<div id="qrcode"></div>
+<style>
+body {
+  font-family: sans-serif;
+  margin: 30px;
+  max-width: 500px;
+}
+label {
+  display: block;
+  margin-bottom: 10px;
+}
+input {
+  width: 100%;
+  padding: 6px;
+  margin-top: 4px;
+  box-sizing: border-box;
+}
+button {
+  padding: 10px 16px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+}
+button:hover {
+  background-color: #0056b3;
+}
+#qrcode {
+  margin-top: 20px;
+}
+</style>
+</head>
+
+<body>
+  <h2>急救宝注册</h2>
+  <p>填写以下信息后生成您的急救二维码：</p>
+
+  <label>我的名字（必填）：
+    <input id="name" placeholder="请输入姓名">
+  </label>
+
+  <label>我的手机号（必填）：
+    <input id="phone" type="tel" placeholder="请输入手机号">
+  </label>
+
+  <label>紧急联系人名字（必填）：
+    <input id="emergencyName" placeholder="请输入紧急联系人姓名">
+  </label>
+
+  <label>紧急联系人手机号（必填）：
+    <input id="emergencyPhone" type="tel" placeholder="请输入紧急联系人手机号">
+  </label>
+
+  <button onclick="submitForm()">提交并生成二维码</button>
+
+  <div id="qrcode"></div>
 </body>
 </html>
