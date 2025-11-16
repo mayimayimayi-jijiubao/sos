@@ -72,7 +72,7 @@ const EmergencyQRCodePage = () => {
         data: url,
         image: "/logo.png",
         qrOptions: { errorCorrectionLevel: "Q" },
-        imageOptions: { imageSize: 0.2, margin: 0, crossOrigin: "anonymous" },
+        imageOptions: { imageSize: 0.4, margin: 0, crossOrigin: "anonymous" },
         dotsOptions: { color: "#000000", type: "square" },
         backgroundOptions: { color: "#ffffff" },
       });

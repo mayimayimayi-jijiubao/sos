@@ -12,9 +12,10 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
+    "leancloud-storage": "^4.15.2",
+    "qr-code-styling": "^1.9.2",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "qr-code-styling": "^1.5.0"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "react-scripts": "^5.0.1"
