@@ -1,76 +1,95 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<title>急救宝信息展示</title>
+<title>急救宝｜紧急信息</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
-<!-- 本地 JS 引用 -->
 <script src="./av-min.js"></script>
-
-<script>
-  AV.init({
-    appId: "Ivzq5oxAhWX2BqNvdFKQbBjl-gzGzoHsz",
-    appKey: "ESfT6VmHoUAzyc8Ay0ebZbuC",
-    serverURL: "https://ivzq5oxa.lc-cn-n1-shared.com"
-  });
-
-  async function loadInfo() {
-    const params = new URLSearchParams(window.location.search);
-    const phone = params.get('phone');
-    if (!phone) {
-      document.getElementById('info').innerText = '⚠️ 未提供手机号参数';
-      return;
-    }
-
-    try {
-      const query = new AV.Query('UserInfo');
-      query.equalTo('phone', phone);
-      const obj = await query.first();
-      if (!obj) {
-        document.getElementById('info').innerText = '❌ 未找到对应信息';
-        return;
-      }
-
-      const data = obj.toJSON();
-      document.getElementById('info').innerHTML = `
-        <div class="card">
-          <h3>急救信息</h3>
-          <p><strong>姓名：</strong>${data.name}</p>
-          <p><strong>手机号：</strong>${data.phone}</p>
-          <p><strong>紧急联系人：</strong>${data.emergencyName}</p>
-          <p><strong>紧急联系电话：</strong>${data.emergencyPhone}</p>
-        </div>
-      `;
-    } catch (err) {
-      console.error(err);
-      document.getElementById('info').innerText = '❌ 加载失败：' + err.message;
-    }
-  }
-
-  window.onload = loadInfo;
-</script>
 
 <style>
 body {
-  font-family: sans-serif;
-  margin: 30px;
-  max-width: 480px;
+  margin: 0;
+  padding: 0;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: #fff;
+  text-align: center;
+  padding: 30px 20px;
 }
+
+.logo {
+  width: 120px;
+  margin-bottom: 15px;
+}
+
+h2 {
+  font-size: 22px;
+  color: #E60000;
+  margin: 5px 0 20px;
+}
+
 .card {
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  border: 1px solid #eee;
+  border-radius: 12px;
   padding: 20px;
-  background: #f8f8f8;
+  background: #fafafa;
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  text-align: left;
 }
-h3 {
-  color: #d9534f;
+
+.card p {
+  font-size: 17px;
+  color: #222;
+  margin: 10px 0;
+}
+.card strong {
+  color: #000;
+}
+.note {
+  color: #999;
+  margin-top: 18px;
+  font-size: 12px;
 }
 </style>
+
+<script>
+AV.init({
+  appId: "Ivzq5oxAhWX2BqNvdFKQbBjl-gzGzoHsz",
+  appKey: "ESfT6VmHoUAzyc8Ay0ebZbuC",
+  serverURL: "https://ivzq5oxa.lc-cn-n1-shared.com"
+});
+
+async function loadInfo(){
+  const phone = new URLSearchParams(window.location.search).get('phone');
+  if(!phone){ info.innerText='参数缺失'; return; }
+
+  try{
+    const query = new AV.Query('UserInfo');
+    query.equalTo('phone', phone);
+    const obj = await query.first();
+    if(!obj){ info.innerText='未找到信息'; return;}
+
+    const data = obj.toJSON();
+    info.innerHTML = `
+      <div class="card">
+        <p><strong>姓名：</strong>${data.name}</p>
+        <p><strong>电话：</strong>${data.phone}</p>
+        <p><strong>紧急联系人：</strong>${data.emergencyName}</p>
+        <p><strong>联系人电话：</strong>${data.emergencyPhone}</p>
+      </div>`;
+  }catch(err){
+    info.innerText='加载失败：'+err.message;
+  }
+}
+window.onload = loadInfo;
+</script>
 </head>
 
 <body>
-  <h2>急救宝信息展示</h2>
-  <div id="info">⏳ 正在加载中...</div>
+  <img src="./logo.png" class="logo">
+  <h2>紧急信息</h2>
+  <div id="info">加载中...</div>
+  <p class="note">请在安全情况下使用 · © 急救宝</p>
 </body>
 </html>
