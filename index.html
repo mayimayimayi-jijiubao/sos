@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<title>急救宝｜创建急救信息</title>
+<title>急救宝｜信息登记</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./av-min.js"></script>
 <script src="./qrcode.min.js"></script>
@@ -10,142 +10,184 @@
 <style>
 body {
   margin: 0;
-  padding: 0;
-  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-family: "PingFang SC","Microsoft YaHei",sans-serif;
   background: #fff;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  min-height: 100vh;
-  padding-top: 40px;
+  padding: 28px 4%;
 }
-.container {
-  width: 92%;
-  max-width: 420px;
-  text-align: center;
-}
+.container { width: 100%; max-width: 420px; text-align: center; }
+.logo { width: 140px; margin: 0 auto 16px; }
+h2 { font-size: 22px; margin-bottom: 12px; color: #222; }
 
-.logo {
-  width: 140px;
-  margin: 0 auto 16px;
-}
+label { display: block; font-size: 14px; color: #222; text-align: left; }
 
-h2 {
-  font-size: 22px;
-  font-weight: bold;
-  color: #222;
-  margin: 10px 0 20px;
+.input-row {
+  position: relative;
+  margin-bottom: 14px;
 }
-
-label {
-  display: block;
-  text-align: left;
-  color: #222;
-  font-size: 14px;
-  margin-bottom: 6px;
-}
-
 input {
   width: 100%;
   height: 44px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
   padding: 0 12px;
   font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
   background: #fafafa;
   outline: none;
-  transition: 0.2s;
-  margin-bottom: 14px;
+  transition: .2s;
 }
-input:focus {
-  border-color: #E60000;
-  background: #fff;
+input:focus { border-color: #E60000; background: #fff; }
+
+.ok-tag {
+  position: absolute;
+  right: 10px; top: 50%; transform: translateY(-50%);
+  color: green; font-size: 14px; display: none;
+}
+.err-msg {
+  color: red; font-size: 12px; margin-top: 3px; text-align: left; display: none;
 }
 
 button {
-  width: 100%;
-  height: 48px;
+  width: 100%; height: 48px;
+  font-size: 17px; font-weight: bold;
+  border-radius: 8px; border: none; cursor: not-allowed;
+  background: #ccc; color: #fff; transition: .2s;
+}
+button.enabled {
   background: #E60000;
-  border: none;
-  border-radius: 8px;
-  font-size: 17px;
-  color: #fff;
-  font-weight: bold;
-  margin-top: 8px;
   cursor: pointer;
 }
-button:active { opacity: 0.85; }
 
-#qrcode {
-  margin-top: 24px;
-}
-.tip {
-  color: #777;
-  font-size: 13px;
-  margin-bottom: 14px;
-}
+#qrcodeArea { margin-top: 24px; }
 </style>
+</head>
+
+<body>
+<div class="container">
+
+  <img class="logo" src="/logo.png">
+  <h2>急救信息登记</h2>
+
+  <!-- 姓名 -->
+  <label>姓名 *</label>
+  <div class="input-row">
+    <input id="nameInput" placeholder="1～10个字符，汉字/字母/数字" oninput="validateAll()">
+    <span class="ok-tag" id="nameOK">OK</span>
+  </div>
+  <div class="err-msg" id="nameERR">格式不正确</div>
+
+  <!-- 手机 -->
+  <label>手机号 *</label>
+  <div class="input-row">
+    <input id="phoneInput" type="tel" placeholder="11位数字" oninput="validateAll()">
+    <span class="ok-tag" id="phoneOK">OK</span>
+  </div>
+  <div class="err-msg" id="phoneERR">必须为11位数字</div>
+
+  <!-- 紧急联系人 -->
+  <label>紧急联系人 *</label>
+  <div class="input-row">
+    <input id="emergencyNameInput" placeholder="1～10个字符，汉字/字母/数字" oninput="validateAll()">
+    <span class="ok-tag" id="emergencyNameOK">OK</span>
+  </div>
+  <div class="err-msg" id="emergencyNameERR">格式不正确</div>
+
+  <!-- 联系人电话 -->
+  <label>联系人电话 *</label>
+  <div class="input-row">
+    <input id="emergencyPhoneInput" type="tel" placeholder="6～12位数字，可含‘-’" oninput="validateAll()">
+    <span class="ok-tag" id="emergencyPhoneOK">OK</span>
+  </div>
+  <div class="err-msg" id="emergencyPhoneERR">仅允许数字或 - ，6～12字符</div>
+
+  <button id="submitBtn" onclick="submitForm()" disabled>生成急救信息二维码</button>
+  <div id="qrcodeArea"></div>
+</div>
 
 <script>
+// 初始化 LeanCloud
 AV.init({
   appId: "Ivzq5oxAhWX2BqNvdFKQbBjl-gzGzoHsz",
   appKey: "ESfT6VmHoUAzyc8Ay0ebZbuC",
   serverURL: "https://ivzq5oxa.lc-cn-n1-shared.com"
 });
 
-async function submitForm() {
-  const phone = phoneInput.value.trim();
+// 正则规则
+const namePattern = /^[\u4e00-\u9fa5A-Za-z0-9]{1,10}$/;
+const phonePattern = /^[0-9]{11}$/;
+const emgPhonePattern = /^[0-9\-]{6,12}$/;
+
+// 验证函数
+function validateAll(){
+  let v1 = validateField("nameInput", namePattern, "nameOK", "nameERR");
+  let v2 = validateField("phoneInput", phonePattern, "phoneOK", "phoneERR");
+  let v3 = validateField("emergencyNameInput", namePattern, "emergencyNameOK", "emergencyNameERR");
+  let v4 = validateField("emergencyPhoneInput", emgPhonePattern, "emergencyPhoneOK", "emergencyPhoneERR");
+
+  const submitBtn = document.getElementById("submitBtn");
+  if(v1 && v2 && v3 && v4){
+    submitBtn.classList.add("enabled");
+    submitBtn.disabled = false;
+  }else{
+    submitBtn.classList.remove("enabled");
+    submitBtn.disabled = true;
+  }
+}
+
+function validateField(inputId, pattern, okId, errId){
+  const input = document.getElementById(inputId);
+  const value = input.value.trim();
+  const ok = document.getElementById(okId);
+  const err = document.getElementById(errId);
+
+  if(pattern.test(value)){
+    input.style.borderColor = "#1bc41b";
+    ok.style.display = "inline";
+    err.style.display = "none";
+    return true;
+  }else{
+    if(value.length > 0){
+      input.style.borderColor = "red";
+      err.style.display = "block";
+    }else{
+      err.style.display = "none";
+      input.style.borderColor = "#ccc";
+    }
+    ok.style.display = "none";
+    return false;
+  }
+}
+
+// 保存 + 生成二维码
+async function submitForm(){
   const name = nameInput.value.trim();
+  const phone = phoneInput.value.trim();
   const emergencyName = emergencyNameInput.value.trim();
   const emergencyPhone = emergencyPhoneInput.value.trim();
 
-  if(!phone || !name || !emergencyName || !emergencyPhone){
-    alert('请填写所有必填项'); return;
-  }
-
   try{
-    const query = new AV.Query('UserInfo');
-    query.equalTo('phone', phone);
+    const query = new AV.Query("UserInfo");
+    query.equalTo("phone", phone);
     const existing = await query.first();
     let obj = existing ? existing : new (AV.Object.extend('UserInfo'))();
-    obj.set('phone', phone);
-    obj.set('name', name);
-    obj.set('emergencyName', emergencyName);
-    obj.set('emergencyPhone', emergencyPhone);
+    obj.set("name", name);
+    obj.set("phone", phone);
+    obj.set("emergencyName", emergencyName);
+    obj.set("emergencyPhone", emergencyPhone);
     await obj.save();
 
-    alert('信息保存成功！');
+    alert("信息保存成功");
 
-    const url = window.location.origin + '/qrcode?phone=' + encodeURIComponent(phone);
-    qrcodeArea.innerHTML = '';
+    const url = window.location.origin + "/qrcode?phone=" + encodeURIComponent(phone);
+    qrcodeArea.innerHTML = "";
     new QRCode(qrcodeArea, {text: url, width: 200, height: 200});
+
   }catch(err){
-    alert('保存失败：' + err.message);
+    alert("保存失败：" + err.message);
   }
 }
+
 </script>
-</head>
-
-<body>
-<div class="container">
-<img src="/logo.png" class="logo">
-  <h2>创建我的急救信息</h2>
-
-  <label>姓名 *</label>
-  <input id="nameInput" placeholder="请输入姓名">
-
-  <label>手机号 *</label>
-  <input id="phoneInput" type="tel" placeholder="请输入手机号">
-
-  <label>紧急联系人 *</label>
-  <input id="emergencyNameInput" placeholder="请输入紧急联系人姓名">
-
-  <label>联系人电话 *</label>
-  <input id="emergencyPhoneInput" type="tel" placeholder="请输入联系人电话">
-
-  <button onclick="submitForm()">生成急救二维码</button>
-
-  <div id="qrcodeArea"></div>
-</div>
 </body>
 </html>
