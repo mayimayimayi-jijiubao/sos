@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<title>急救宝｜信息登记</title>
+<title>急救宝｜创建我的急救信息卡</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./av-min.js"></script>
 <script src="./qrcode.min.js"></script>
@@ -67,12 +67,12 @@ button.enabled {
 <div class="container">
 
   <img class="logo" src="/logo.png">
-  <h2>急救信息登记</h2>
+  <h2>创建我的急救信息卡</h2>
 
   <!-- 姓名 -->
   <label>姓名 *</label>
   <div class="input-row">
-    <input id="nameInput" placeholder="1～10个字符，汉字/字母/数字" oninput="validateAll()">
+    <input id="nameInput" placeholder="仅支持汉字字母和数字" oninput="validateAll()">
     <span class="ok-tag" id="nameOK">OK</span>
   </div>
   <div class="err-msg" id="nameERR">格式不正确</div>
@@ -80,7 +80,7 @@ button.enabled {
   <!-- 手机 -->
   <label>手机号 *</label>
   <div class="input-row">
-    <input id="phoneInput" type="tel" placeholder="11位数字" oninput="validateAll()">
+    <input id="phoneInput" type="tel" placeholder="仅支持中国手机号" oninput="validateAll()">
     <span class="ok-tag" id="phoneOK">OK</span>
   </div>
   <div class="err-msg" id="phoneERR">必须为11位数字</div>
@@ -88,7 +88,7 @@ button.enabled {
   <!-- 紧急联系人 -->
   <label>紧急联系人 *</label>
   <div class="input-row">
-    <input id="emergencyNameInput" placeholder="1～10个字符，汉字/字母/数字" oninput="validateAll()">
+    <input id="emergencyNameInput" placeholder="仅支持汉字字母和数字" oninput="validateAll()">
     <span class="ok-tag" id="emergencyNameOK">OK</span>
   </div>
   <div class="err-msg" id="emergencyNameERR">格式不正确</div>
@@ -96,12 +96,12 @@ button.enabled {
   <!-- 联系人电话 -->
   <label>联系人电话 *</label>
   <div class="input-row">
-    <input id="emergencyPhoneInput" type="tel" placeholder="6～12位数字，可含‘-’" oninput="validateAll()">
+    <input id="emergencyPhoneInput" type="tel" placeholder="支持手机号和固定电话" oninput="validateAll()">
     <span class="ok-tag" id="emergencyPhoneOK">OK</span>
   </div>
-  <div class="err-msg" id="emergencyPhoneERR">仅允许数字或 - ，6～12字符</div>
+  <div class="err-msg" id="emergencyPhoneERR">仅支持数字和 - </div>
 
-  <button id="submitBtn" onclick="submitForm()" disabled>生成急救信息二维码</button>
+  <button id="submitBtn" onclick="submitForm()" disabled>生成我的急救信息卡</button>
   <div id="qrcodeArea"></div>
 </div>
 
