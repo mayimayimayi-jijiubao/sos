@@ -88,7 +88,7 @@ button.enabled {
   <!-- 紧急联系人 -->
   <label>紧急联系人 *</label>
   <div class="input-row">
-    <input id="emergencyNameInput" placeholder="仅支持汉字字母和数字" oninput="validateAll()">
+    <input id="emergencyNameInput" placeholder="仅支持汉字、字母和数字" oninput="validateAll()">
     <span class="ok-tag" id="emergencyNameOK">OK</span>
   </div>
   <div class="err-msg" id="emergencyNameERR">格式不正确</div>
@@ -96,7 +96,7 @@ button.enabled {
   <!-- 联系人电话 -->
   <label>紧急联系人电话 *</label>
   <div class="input-row">
-    <input id="emergencyPhoneInput" type="tel" placeholder="支持手机号和固定电话" oninput="validateAll()">
+    <input id="emergencyPhoneInput" type="tel" placeholder="支持手机和固定电话" oninput="validateAll()">
     <span class="ok-tag" id="emergencyPhoneOK">OK</span>
   </div>
   <div class="err-msg" id="emergencyPhoneERR">仅支持数字和 - </div>
