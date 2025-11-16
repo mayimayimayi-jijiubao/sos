@@ -5,11 +5,11 @@
     { "src": "qrcode.html", "use": "@vercel/static" },
     { "src": "av-min.js", "use": "@vercel/static" },
     { "src": "qrcode.min.js", "use": "@vercel/static" }
-  ],
+  ]
+{
   "routes": [
+    { "src": "/(.*\\.(png|jpg|jpeg|gif|svg|webp))$", "dest": "/$1" },
     { "src": "/qrcode", "dest": "/qrcode.html" },
-    { "src": "/av-min.js", "dest": "/av-min.js" },
-    { "src": "/qrcode.min.js", "dest": "/qrcode.min.js" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
