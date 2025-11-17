@@ -1,23 +1,17 @@
 {
   "name": "sos",
   "version": "1.0.0",
-  "description": "急救宝轻应用 - 用户填写信息生成二维码",
-  "author": "mayi mayi",
-  "license": "MIT",
   "private": true,
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "build": "react-scripts build"
   },
   "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.15.0",
     "leancloud-storage": "^4.15.2",
     "qr-code-styling": "^1.9.2",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
-  },
-  "devDependencies": {
     "react-scripts": "^5.0.1"
   },
   "browserslist": {

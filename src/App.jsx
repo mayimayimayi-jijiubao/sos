@@ -1,8 +1,15 @@
 import React from "react";
-import EmergencyQRCodePage from "./pages/EmergencyQRCodePage";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import EmergencyFormPage from "./pages/EmergencyFormPage";
+import QRCodeResultPage from "./pages/QRCodeResultPage";
 
-function App() {
-  return <EmergencyQRCodePage />;
-}
+const App = () => (
+  <Router>
+    <Routes>
+      <Route path="/" element={<EmergencyFormPage />} />
+      <Route path="/qrcode" element={<QRCodeResultPage />} />
+    </Routes>
+  </Router>
+);
 
 export default App;

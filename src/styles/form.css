@@ -1,0 +1,86 @@
+.container {
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.logo {
+  display: block;
+  margin: 0 auto 16px;
+  width: 140px;
+}
+
+h2 {
+  font-size: 22px;
+  color: #222;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+label {
+  font-size: 12px;
+  font-weight: bold;
+  color: #000;
+  margin-top: 12px;
+  display: block;
+}
+
+.required {
+  color: red;
+}
+
+input {
+  width: 100%;
+  height: 44px;
+  padding: 0 12px;
+  font-size: 12px;
+  color: #000;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-top: 4px;
+  margin-bottom: 2px;
+  background: #fff;
+  outline: none;
+  transition: 0.2s;
+}
+
+input:focus {
+  border-color: #e60000;
+}
+
+.err {
+  color: red;
+  font-size: 12px;
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+
+.hint {
+  color: #bbb;
+  font-size: 12px;
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+
+/* 提交按钮样式 */
+button {
+  display: inline-block;   /* 确保可以水平居中 */
+  max-width: 300px;        /* 限制按钮最大宽度 */
+  width: 100%;             /* 可选：在小屏幕仍撑满容器 */
+  height: 48px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 8px;
+  border: none;
+  cursor: not-allowed;
+  background: #ccc;
+  color: #fff;
+  transition: 0.2s;
+  margin: 0 auto;          /* 核心：水平居中 */
+}
+
+button.enabled {
+  background: #e60000;
+  cursor: pointer;
+}
