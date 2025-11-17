@@ -6,3 +6,7 @@ build/
 node_modules/
 node_modules/.cache/
 build/
+node_modules/
+.cache/
+build/
+.DS_Store
