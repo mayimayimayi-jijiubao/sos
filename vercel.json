@@ -8,6 +8,12 @@
     }
   ],
   "routes": [
+    // 静态资源不被 SPA 重写
+    { "src": "/static/(.*)", "dest": "/static/$1" },
+    { "src": "/favicon.ico", "dest": "/favicon.ico" },
+    { "src": "/logo.png", "dest": "/logo.png" },
+
+    // SPA 路由重写
     { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
