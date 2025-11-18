@@ -1,75 +1,56 @@
 import React, { useEffect, useRef, useState } from "react";
 import QRCodeStyling from "qr-code-styling";
-import { useNavigate } from "react-router-dom";
-import "../styles/form.css";  // 按钮样式
-import "../styles/animate.css"; // fade-in 动画
+import { useNavigate, useSearchParams } from "react-router-dom";
+import "../styles/form.css"; // 保持按钮样式一致
 
 const QRCodeResultPage = () => {
   const qrRef = useRef(null);
   const navigate = useNavigate();
-  const [qrInstance, setQrInstance] = useState(null);
+  const [searchParams] = useSearchParams();
+  const userId = searchParams.get("userId");
+  const [qrReady, setQrReady] = useState(false);
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const phone = params.get("phone");
-    const url = window.location.origin + "/qrcode?phone=" + phone;
+    if (!userId || !qrRef.current) return;
 
-    // 屏幕宽度 60%
-    const size = Math.round(window.innerWidth * 0.6);
+    const size = Math.round(window.innerWidth * 0.8); // 根据屏幕宽度自适应
 
     const qr = new QRCodeStyling({
       width: size,
       height: size,
-      data: url,
+      data: `${window.location.origin}/emergency?userId=${userId}`,
       image: "/logo.png",
       qrOptions: { errorCorrectionLevel: "Q" },
-      imageOptions: { imageSize: 0.33, margin: 0 },
+      imageOptions: { imageSize: 0.33, margin: 0 }
     });
 
+    qrRef.current.innerHTML = "";
     qr.append(qrRef.current);
-    setQrInstance(qr);
-  }, []);
-
-  const downloadQR = () => {
-    qrInstance?.download({ name: "Jiujiubao_QR", extension: "png" });
-  };
+    setQrReady(true);
+  }, [userId]);
 
   return (
-    <div
-      style={{
-        textAlign: "center",
-        padding: "20px 10px",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-      }}
-      className="fade-in"
-    >
-      <h2>我的急救信息二维码</h2>
+    <div style={{ textAlign: "center", padding: "20px", display: "flex", flexDirection: "column", alignItems: "center" }}>
+      
+      {/* 按钮 - 显示我的急救信息 */}
+      <button
+        className="enabled"
+        style={{ maxWidth: 300, width: "90%", marginBottom: 12 }}
+        onClick={() => navigate(`/emergency?userId=${userId}`)}
+      >
+        显示我的急救信息
+      </button>
 
-      {/* 按钮放在二维码上方 */}
-{/* 下载二维码按钮 */}
-<button
-  className="enabled"
-  style={{ maxWidth: 300, width: "90%", marginBottom: 10, cursor: "pointer" }}
-  onClick={downloadQR}
->
-  下载二维码
-</button>
+      {/* 文字提示 */}
+      <p style={{ fontSize: 14, color: "#666", marginBottom: 12 }}>
+        长按二维码，保存到手机中
+      </p>
 
-{/* 返回首页按钮 */}
-<button
-  style={{ maxWidth: 300, width: "90%", background: "#555", marginBottom: 20, cursor: "pointer" }}
-  onClick={() => navigate("/")}
->
-  返回首页
-</button>
-
-      {/* 二维码 */}
+      {/* 二维码容器 */}
       <div
         ref={qrRef}
         style={{
-          marginTop: 0,
+          marginTop: 10,
           display: "flex",
           justifyContent: "center",
           width: "100%",

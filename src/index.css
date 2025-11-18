@@ -1,0 +1,6 @@
+/* src/index.css - 全局样式 */
+html, body, #root {
+  height: 90%;
+  margin: 0;
+  padding: 0;
+}

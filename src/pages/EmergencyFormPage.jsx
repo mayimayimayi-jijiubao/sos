@@ -63,9 +63,12 @@ const EmergencyFormPage = () => {
       userObj.set("emergencyName", emergencyName);
       userObj.set("emergencyPhone", emergencyPhone);
 
-      await userObj.save();
+      // 保存成功后取 objectId 作为 userId
+      const savedObj = await userObj.save();
+      const userId = savedObj.id;
+
       setLoading(false);
-      navigate(`/qrcode?phone=${encodeURIComponent(phone)}`);
+      navigate(`/qrcode?userId=${encodeURIComponent(userId)}`);
     } catch (err) {
       setLoading(false);
       alert("保存失败：" + err.message);

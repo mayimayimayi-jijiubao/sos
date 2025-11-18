@@ -84,3 +84,22 @@ button.enabled {
   background: #e60000;
   cursor: pointer;
 }
+
+.info-title {
+  width: 100% !important;
+  text-align: center !important;
+  display: block !important;
+  margin-bottom: 16px !important;
+}
+
+.emergency-title {
+  text-align: center !important;
+  width: 100%;
+  display: block;
+  margin: 0 auto 16px;
+}
+
+.container h2.emergency-title {
+  text-align: center !important;
+}
+
