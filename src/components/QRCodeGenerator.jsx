@@ -12,7 +12,6 @@ const QRCodeGenerator = ({ dataUrl }) => {
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d");
 
-      // 先生成二维码
       await QRCode.toCanvas(canvas, dataUrl, {
         width: 300,
         margin: 2,
@@ -20,15 +19,13 @@ const QRCodeGenerator = ({ dataUrl }) => {
         color: { dark: "#000000", light: "#ffffff" },
       });
 
-      // 加载 logo
       const logo = new Image();
-      logo.src = "/logo.png"; // 必须是同域资源
+      logo.src = "/logo.png";
       logo.onload = () => {
         const size = 60;
         const x = (canvas.width - size) / 2;
         const y = (canvas.height - size) / 2;
 
-        // 画白色方块背景
         const r = 8;
         ctx.fillStyle = "#ffffff";
         ctx.beginPath();
@@ -44,11 +41,13 @@ const QRCodeGenerator = ({ dataUrl }) => {
         ctx.closePath();
         ctx.fill();
 
-        // 绘制 logo
         ctx.drawImage(logo, x, y, size, size);
 
-        // 转成 PNG
-        setImgSrc(canvas.toDataURL("image/png"));
+        // ⭐ 关键改动：使用 blob 转 URL，让手机能长按保存
+        canvas.toBlob((blob) => {
+          const url = URL.createObjectURL(blob);
+          setImgSrc(url);
+        }, "image/png");
       };
     };
 
